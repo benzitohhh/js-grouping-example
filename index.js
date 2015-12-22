@@ -21,6 +21,7 @@
  * @param {Object[]} items - The items to group. Must contain the properties for each of the given group_by and value_key.
  * @param {string[]} group_by - The item keys to group by, in order.
  * @param {?string} value_key - Optional value key. Defaults to 'value'.
+ * @returns {Object} - Nested object
  */
 function group(items, group_by, value_key) {
   value_key = value_key || 'value';
@@ -50,6 +51,7 @@ function group(items, group_by, value_key) {
  * @param {Object} target - The target to add the item to.
  * @param {string[]} group_by - The item keys to group by, in order.
  * @param {string} value_key - The key for the value
+ * @returns {Object} - target (mutated)
  */
 function insert_item(item, target, group_by, value_key) {
   // Get nest keys (we use the items values here)
@@ -77,6 +79,7 @@ function insert_item(item, target, group_by, value_key) {
  * Returns the lowest level object.
  * @param {Object} target
  * @param {string[]} nest_levels
+ * @returns {Object} - target (mutated)
  */
 function get_nested_object(target, nest_keys) {
   var parent = target;
@@ -87,6 +90,16 @@ function get_nested_object(target, nest_keys) {
     parent = parent[key]; // descend into object
   });
   return parent;
+}
+
+/**
+ * Returns the unique values for the given key within the items.
+ * @param {Object[]} items - Array of item objects, with various properties
+ * @param {string} key - A key of interest
+ * @returns {[]} Array of unique category values for the items for the given key.
+ */
+function get_categories(items, key) {
+  return _.uniq(items.map(function(d) { return d[key]; }));
 }
 
 var items = [
@@ -115,3 +128,5 @@ var items2 = [
 
 var company_to_territory_to_value = group(items, ['company', 'territory'], 'value');
 var company_to_territory_to_value2 = group(items2, ['company', 'territory'], 'value');
+
+var territories = get_categories(items, 'territory');
